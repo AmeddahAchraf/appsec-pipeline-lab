@@ -5,7 +5,7 @@ Close the issue yourself when you have done your part.
 
 | Day | Topic | Agent part | Your part (GitHub issue) |
 |---|---|---|---|
-| 1 | Run the stack, OIDC tokens | pending | pending |
+| 1 | Run the stack, OIDC tokens | done (commit f8d8602) | #1 open |
 | 2 | Threat model (STRIDE) | pending | pending |
 | 3 | OWASP ASVS check | pending | pending |
 | 4 | GitHub pipeline and triage report | pending | pending |
