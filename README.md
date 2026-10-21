@@ -31,7 +31,10 @@ cd app && ./mvnw test
 cd triage && python3 -m unittest -v
 
 # Full local stack: Keycloak on :8180, API on :8080
-podman compose up --build
+podman compose up -d --build
+scripts/get-token.sh alice      # access token for a test user
+scripts/smoke-test.sh           # alice creates a note, bob gets 404
+podman compose down
 ```
 
 ## Why the triage step matters

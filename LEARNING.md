@@ -5,8 +5,8 @@ security docs yourself. Do every step by hand at least once, and be able to expl
 interview. Already working: the API with 9 passing tests, and the triage tool with 9 passing tests.
 
 ## Day 1: run the stack
-- `podman compose up --build`. **Not tested yet:** the Keycloak realm import (custom `tenant` attribute
-  needs the declarative user profile in `notes-realm.json`). If the claim is missing, fixing it is your first task.
+- `podman compose up -d --build`. Tested on 2026-10-21: the realm imports and the `tenant` claim is in the
+  access token. `scripts/smoke-test.sh` checks the whole flow.
 - Get a token for alice (password in `keycloak/notes-realm.json`) and call the API:
   ```bash
   TOKEN=$(curl -s -d client_id=notes-cli -d grant_type=password -d username=alice -d password=... \

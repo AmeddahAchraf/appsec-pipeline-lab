@@ -5,7 +5,7 @@ If a requirement has no test, it is not done.
 
 | ID | Requirement | Control (where) | Evidence (test) | ASVS 4.0.3 | Threat |
 |---|---|---|---|---|---|
-| SR-01 | A user can only read or delete their own notes, inside their own tenant. Foreign ids return 404 | `NoteRepository.findByIdAndTenantIdAndOwnerId`, `NoteController.owned` | `sr01_ownerCanReadOwnNote`, `sr01_otherUserInSameTenantGets404`, `sr01_sameUserIdInOtherTenantGets404` | V4.2.1 | T1 |
+| SR-01 | A user can only read or delete their own notes, inside their own tenant. Foreign ids return 404 | `NoteRepository.findByIdAndTenantIdAndOwnerId`, `NoteController.owned` | `sr01_ownerCanReadOwnNote`, `sr01_otherUserInSameTenantGets404`, `sr01_sameUserIdInOtherTenantGets404`, `ErrorStatusOverHttpTest.sr01_otherUserGets404NotForbidden`, `scripts/smoke-test.sh` | V4.2.1 | T1 |
 | SR-02 | Every API call needs a valid token. Owner and tenant always come from the token, never from the request | `SecurityConfig`, `NoteController.create` | `sr02_requestsWithoutTokenAreRejected`, `sr02_ownerIsTakenFromTokenNotBody` | V4.1.1 | T2, T3 |
 | SR-03 | Input is validated against size limits before it reaches the database | `NoteRequest` bean validation | `sr03_oversizedTitleIsRejected` | V5.1.3 | T5 |
 | SR-04 | A token without a tenant claim is rejected | `NoteController.tenant` | `sr04_tokenWithoutTenantIsForbidden` | V4.1.3 | T4 |

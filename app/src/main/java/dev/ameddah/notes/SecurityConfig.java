@@ -1,5 +1,7 @@
 package dev.ameddah.notes;
 
+import jakarta.servlet.DispatcherType;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,6 +19,9 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(c -> c.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Let Spring Boot render 404/400 errors. Without this the forward to /error hits
+                        // denyAll() and every error becomes a 403 (breaks SR-01). Direct GET /error stays denied.
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().denyAll())
