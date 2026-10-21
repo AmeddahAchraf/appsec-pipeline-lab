@@ -1,0 +1,8 @@
+# Use the default Gitleaks rules, but skip the Keycloak realm: it holds random,
+# local-only passwords for the lab's test users, on purpose (see compose.yml).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Local lab test users"
+paths = ['''keycloak/notes-realm\.json''']

@@ -1,0 +1,11 @@
+app/target/
+.m2/
+# CI scan outputs (root only; triage/fixtures/ must stay tracked)
+/*.sarif
+/trivy.json
+/zap.json
+/sbom.spdx.json
+/triage-report.md
+/dast/
+__pycache__/
+.DS_Store

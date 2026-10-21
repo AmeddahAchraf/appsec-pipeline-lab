@@ -1,0 +1,4 @@
+{"runs":[{"tool":{"driver":{"name":"Semgrep"}},"results":[
+ {"ruleId":"java.lang.security.audit.sqli.jdbc-sqli","level":"error","message":{"text":"SQL built from user input"},"locations":[{"physicalLocation":{"artifactLocation":{"uri":"app/src/main/java/Legacy.java"},"region":{"startLine":42}}}]},
+ {"ruleId":"java.lang.security.audit.crypto.weak-hash","level":"warning","message":{"text":"MD5 used"},"locations":[{"physicalLocation":{"artifactLocation":{"uri":"app/src/main/java/Hash.java"},"region":{"startLine":7}}}]}
+]}]}

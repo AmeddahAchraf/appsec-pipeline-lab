@@ -1,0 +1,3 @@
+{"runs":[{"tool":{"driver":{"name":"gitleaks"}},"results":[
+ {"ruleId":"generic-api-key","level":"error","message":{"text":"Generic API key detected"},"locations":[{"physicalLocation":{"artifactLocation":{"uri":"app/src/main/resources/old.properties"},"region":{"startLine":3}}}]}
+]}]}

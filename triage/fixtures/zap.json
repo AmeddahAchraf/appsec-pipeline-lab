@@ -1,0 +1,3 @@
+{"site":[{"@name":"http://localhost:8080","alerts":[
+ {"pluginid":"10038","alert":"Content Security Policy (CSP) Header Not Set","riskcode":"2","instances":[{"uri":"http://localhost:8080/actuator/health"}]}
+]}]}

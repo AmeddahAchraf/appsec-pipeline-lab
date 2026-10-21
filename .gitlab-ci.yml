@@ -1,0 +1,79 @@
+# Same AppSec pipeline as .github/workflows/appsec.yml, for GitLab.
+stages: [test, scan, dast, triage]
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
+
+test:
+  stage: test
+  image: eclipse-temurin:17-jdk
+  cache:
+    paths: [.m2/]
+  script:
+    - cd app && ./mvnw -B verify
+  artifacts:
+    paths: [app/target/notes-api-*.jar]
+    reports:
+      junit: app/target/surefire-reports/TEST-*.xml
+
+sast:
+  stage: scan
+  image: semgrep/semgrep:1.95.0
+  script:
+    - semgrep scan --config p/java --config p/owasp-top-ten --sarif --output semgrep.sarif app/
+  artifacts:
+    paths: [semgrep.sarif]
+
+sca:
+  stage: scan
+  image:
+    name: aquasec/trivy:0.56.2
+    entrypoint: [""]
+  script:
+    - trivy fs --scanners vuln --format json --output trivy.json app/
+  artifacts:
+    paths: [trivy.json]
+
+secrets:
+  stage: scan
+  image:
+    name: ghcr.io/gitleaks/gitleaks:v8.21.2
+    entrypoint: [""]
+  variables:
+    GIT_DEPTH: 0
+  script:
+    - gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif --exit-code 0
+  artifacts:
+    paths: [gitleaks.sarif]
+
+sbom:
+  stage: scan
+  image:
+    name: anchore/syft:v1.16.0
+    entrypoint: [""]
+  script:
+    - /syft dir:app -o spdx-json=sbom.spdx.json
+  artifacts:
+    paths: [sbom.spdx.json]
+
+dast:
+  stage: dast
+  image: ghcr.io/zaproxy/zaproxy:stable
+  needs: [test]
+  script:
+    - java -jar app/target/notes-api-*.jar > app.log 2>&1 &
+    - for i in $(seq 1 60); do curl -sf localhost:8080/actuator/health && break; sleep 2; done
+    - mkdir -p /zap/wrk && zap-baseline.py -t http://localhost:8080 -J zap.json -I
+    - cp /zap/wrk/zap.json .
+  artifacts:
+    paths: [zap.json, app.log]
+
+triage:
+  stage: triage
+  image: python:3.12-slim
+  needs: [sast, sca, secrets, dast]
+  script:
+    - python3 triage/prioritize.py --trivy trivy.json --sarif semgrep.sarif gitleaks.sarif --zap zap.json --out triage-report.md --fail-on P1
+  artifacts:
+    when: always
+    paths: [triage-report.md]
